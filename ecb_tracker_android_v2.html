@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+--bg:#07090F;--surface:#0D1117;--surface2:#111827;--border:#1E2D45;
+--cyan:#00D4FF;--green:#00E5A0;--amber:#F59E0B;--red:#FF4D6A;--purple:#A78BFA;
+--text:#E2EAF5;--muted:#4A6080;--sub:#8BA3BE;
+--card-r:12px;--font:Outfit,sans-serif;--mono:'DM Mono',monospace;
+}
+.light{
+--bg:#F0F4F8;--surface:#FFFFFF;--surface2:#E8EDF5;--border:#C8D6E8;
+--text:#0D1117;--muted:#6B8CAE;--sub:#3D5A7A;
+}
+body{font-family:var(--font);background:#1a1a2e;display:flex;align-items:center;justify-content:center;min-height:600px;padding:16px 0 0;}
+.phone{width:390px;height:820px;background:var(--bg);border-radius:0;overflow:hidden;position:relative;display:flex;flex-direction:column;transition:background .3s;}
+/* Android status bar */
+.status-bar{height:28px;padding:6px 16px 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg);}
+.status-time{font-size:12px;font-weight:600;color:var(--text);}
+.status-icons{display:flex;gap:5px;align-items:center;}
+/* Screen */
+.screen{flex:1;overflow:hidden;position:relative;}
+.page{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;display:none;}
+.page.active{display:block;}
+.page::-webkit-scrollbar{display:none;}
+/* Android bottom nav - no labels, icon only with ripple feel */
+.bottom-nav{height:64px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0 4px 8px;flex-shrink:0;}
+.nav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:8px 18px;border:none;background:transparent;color:var(--muted);transition:color .15s;min-width:48px;min-height:48px;border-radius:50%;position:relative;}
+.nav-btn.active{color:var(--cyan);}
+.nav-btn svg{width:24px;height:24px;}
+.nav-pill{width:32px;height:3px;border-radius:2px;background:var(--cyan);margin-top:3px;opacity:0;}
+.nav-btn.active .nav-pill{opacity:1;}
+/* Screen tabs */
+.screen-tabs{display:flex;gap:6px;padding:4px;background:var(--surface2);border-radius:8px;margin:0 16px 12px;border:1px solid var(--border);}
+.stab{flex:1;padding:6px 2px;text-align:center;font-size:10px;font-weight:600;color:var(--muted);border-radius:6px;cursor:pointer;transition:all .2s;}
+.stab.active{background:var(--cyan);color:#07090F;}
+/* Common */
+.page-header{padding:16px 16px 8px;display:flex;justify-content:space-between;align-items:center;}
+.page-title{font-size:20px;font-weight:700;color:var(--text);}
+.card{background:var(--surface);border-radius:var(--card-r);padding:14px;border:1px solid var(--border);}
+/* LOGIN */
+.login-wrap{padding:32px 20px 20px;display:flex;flex-direction:column;height:100%;overflow-y:auto;}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:40px;}
+.logo-icon{width:40px;height:40px;border-radius:10px;background:var(--cyan);display:flex;align-items:center;justify-content:center;}
+.login-h{font-size:26px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.login-sub{font-size:14px;color:var(--muted);margin-bottom:32px;}
+.input-group{margin-bottom:14px;}
+.input-label{font-size:12px;color:var(--sub);margin-bottom:5px;font-weight:500;}
+.input-field{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;height:50px;padding:0 14px;font-size:15px;font-family:var(--font);color:var(--text);outline:none;transition:border .2s;}
+.input-field:focus{border-color:var(--cyan);}
+.primary-btn{width:100%;background:var(--cyan);color:#07090F;border:none;border-radius:8px;height:50px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;margin-top:8px;letter-spacing:.3px;}
+.text-btn{width:100%;background:transparent;color:var(--cyan);border:1.5px solid var(--border);border-radius:8px;height:50px;font-size:15px;font-weight:600;font-family:var(--font);cursor:pointer;margin-top:10px;}
+/* DASHBOARD */
+.hero-card{margin:8px 16px 14px;background:var(--surface);border-radius:var(--card-r);padding:18px;border:1px solid var(--border);}
+.hero-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.hero-value{font-family:var(--mono);font-size:34px;font-weight:500;color:var(--text);}
+.hero-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.bill-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);border-radius:6px;padding:5px 10px;margin-top:10px;}
+.bill-pill span{font-size:12px;color:var(--green);font-weight:500;}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:14px;}
+.stat-card{background:var(--surface);border-radius:var(--card-r);padding:14px;border:1px solid var(--border);}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+.stat-value{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--text);}
+.stat-unit{font-size:12px;color:var(--sub);}
+.stat-change{font-size:11px;margin-top:3px;}
+.section{padding:0 16px;margin-bottom:14px;}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.section-title{font-size:14px;font-weight:600;color:var(--text);}
+.see-all{font-size:12px;color:var(--cyan);}
+.chart-wrap{display:flex;align-items:flex-end;gap:6px;height:72px;padding-top:6px;}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{width:100%;border-radius:3px 3px 0 0;}
+.bar-label{font-size:9px;color:var(--muted);}
+.activity-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border-bottom:none;}
+.activity-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.activity-name{font-size:14px;font-weight:500;color:var(--text);}
+.activity-time{font-size:11px;color:var(--muted);margin-top:1px;}
+.activity-units{font-family:var(--mono);font-size:13px;font-weight:500;text-align:right;}
+/* LOG */
+.log-section{padding:0 16px;margin-bottom:18px;}
+.log-label{font-size:12px;color:var(--sub);margin-bottom:7px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.meter-input-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:18px;display:flex;justify-content:center;gap:6px;}
+.digit-box{width:42px;height:58px;background:var(--surface2);border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:26px;font-weight:500;color:var(--text);}
+.digit-box.active{border-color:var(--cyan);color:var(--cyan);}
+.digit-sep{font-family:var(--mono);font-size:26px;color:var(--muted);align-self:center;}
+.camera-btn{background:var(--surface);border:2px dashed var(--border);border-radius:var(--card-r);padding:20px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:100%;}
+.appliance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.appliance-chip{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;background:var(--surface);border-radius:10px;border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.appliance-chip.sel{background:rgba(0,212,255,.08);border-color:var(--cyan);}
+.appliance-chip span{font-size:10px;color:var(--sub);text-align:center;}
+.appliance-chip.sel span{color:var(--cyan);}
+.log-btn{margin:0 16px 8px;background:var(--cyan);color:#07090F;border:none;border-radius:8px;height:50px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;width:calc(100% - 32px);display:flex;align-items:center;justify-content:center;gap:7px;}
+/* RECORDS */
+.filter-row{display:flex;gap:7px;padding:0 16px 12px;}
+.filter-chip{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;}
+.filter-chip.on{background:var(--cyan);color:#07090F;}
+.filter-chip.off{background:var(--surface);border:1px solid var(--border);color:var(--sub);}
+.record-card{background:var(--surface);border-radius:var(--card-r);padding:14px;border:1px solid var(--border);margin:0 16px 10px;}
+.record-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.record-date{font-size:14px;font-weight:600;color:var(--text);}
+.record-badge{font-size:10px;padding:3px 9px;border-radius:4px;font-weight:600;}
+.badge-v{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.2);}
+.badge-p{background:rgba(245,158,11,.1);color:var(--amber);border:1px solid rgba(245,158,11,.2);}
+.record-stats{display:flex;gap:16px;}
+.record-stat label{font-size:10px;color:var(--muted);}
+.record-stat .val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--text);}
+.record-stat .val.cy{color:var(--cyan);}
+.a-tags{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;}
+.a-tag{font-size:10px;padding:3px 7px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);border-radius:4px;color:var(--purple);}
+/* PAYMENTS */
+.payment-hero{margin:8px 16px 14px;background:var(--surface);border-radius:var(--card-r);padding:18px;border:1px solid var(--border);}
+.payment-amount{font-family:var(--mono);font-size:32px;font-weight:500;color:var(--text);}
+.pay-btn{flex:1;background:var(--cyan);color:#07090F;border:none;border-radius:8px;height:44px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;}
+.invoice-btn{padding:0 14px;height:44px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer;}
+.payment-hist-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);}
+.payment-hist-item:last-child{border-bottom:none;}
+.ph-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* REPORTS */
+.export-card{background:var(--surface);border-radius:var(--card-r);padding:14px;border:1px solid var(--border);margin:0 16px 10px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+.export-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.export-info{flex:1;}
+.export-name{font-size:14px;font-weight:600;color:var(--text);}
+.export-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.export-arrow{color:var(--muted);}
+.download-toast{position:absolute;bottom:72px;left:16px;right:16px;background:var(--green);color:#07090F;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s;z-index:100;}
+.download-toast.show{transform:translateY(0);opacity:1;}
+/* SETTINGS */
+.settings-section{padding:0 16px;margin-bottom:18px;}
+.settings-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;font-weight:600;}
+.setting-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.setting-item:last-child{border-bottom:none;}
+.setting-name{font-size:14px;font-weight:500;color:var(--text);}
+.setting-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+/* Android toggle switch */
+.android-toggle{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;cursor:pointer;border:none;transition:background .25s;flex-shrink:0;}
+.android-toggle.on{background:var(--cyan);}
+.android-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.android-toggle.on::after{transform:translateX(22px);}
+.profile-row{display:flex;align-items:center;gap:14px;padding:16px 16px;background:var(--surface);border-bottom:1px solid var(--border);margin-bottom:16px;}
+.profile-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#07090F;}
+.profile-name{font-size:16px;font-weight:700;color:var(--text);}
+.profile-email{font-size:12px;color:var(--muted);margin-top:2px;}
+</style>
+</head>
+<body>
+<div style="display:flex;flex-direction:column;align-items:center;">
+  <div style="width:390px;margin-bottom:10px;">
+    <div class="screen-tabs" style="margin:0 0 10px;">
+      <div class="stab active" onclick="showScreen(0,this)">Login</div>
+      <div class="stab" onclick="showScreen(1,this)">Home</div>
+      <div class="stab" onclick="showScreen(2,this)">Log</div>
+      <div class="stab" onclick="showScreen(3,this)">Records</div>
+      <div class="stab" onclick="showScreen(4,this)">Pay</div>
+      <div class="stab" onclick="showScreen(5,this)">Reports</div>
+      <div class="stab" onclick="showScreen(6,this)">Settings</div>
+    </div>
+  </div>
+
+  <div class="phone" id="phoneRoot">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons" style="display:flex;gap:6px;align-items:center;">
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="var(--text)"><rect x="0" y="4" width="2.5" height="7" rx="1"/><rect x="3.5" y="2.5" width="2.5" height="8.5" rx="1"/><rect x="7" y="1" width="2.5" height="10" rx="1"/><rect x="10.5" y="0" width="2.5" height="11" rx="1" opacity=".3"/></svg>
+        <svg width="15" height="11" viewBox="0 0 20 11" fill="var(--text)"><path d="M10 2.5C7.2 2.5 4.7 3.6 2.9 5.4L1 3.5C3.4 1.3 6.5 0 10 0s6.6 1.3 9 3.5L17.1 5.4C15.3 3.6 12.8 2.5 10 2.5z" opacity=".3"/><path d="M10 5.5C8.1 5.5 6.4 6.3 5.2 7.5L3.3 5.6C5 3.9 7.4 3 10 3s5 .9 6.7 2.6L14.8 7.5C13.6 6.3 11.9 5.5 10 5.5z" opacity=".6"/><circle cx="10" cy="10" r="2"/></svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2" stroke="var(--text)" stroke-opacity=".5"/><rect x="2" y="2" width="15" height="7" rx="1" fill="var(--text)"/><path d="M22 3.5v4A2 2 0 0 0 22 3.5z" fill="var(--text)" opacity=".4"/></svg>
+      </div>
+    </div>
+
+    <div class="screen">
+      <!-- LOGIN -->
+      <div class="page active" id="screen-0">
+        <div class="login-wrap">
+          <div class="login-logo">
+            <div class="logo-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#07090F"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div><div style="font-size:20px;font-weight:700;color:var(--text);">ECB Tracker</div><div style="font-size:11px;color:var(--muted);">Energy Management</div></div>
+          </div>
+          <div class="login-h">Welcome back</div>
+          <div class="login-sub">Track your energy, reduce your bills</div>
+          <div class="input-group"><div class="input-label">Email address</div><input class="input-field" type="email" placeholder="you@example.com"></div>
+          <div class="input-group"><div class="input-label">Password</div><input class="input-field" type="password" placeholder="••••••••"></div>
+          <div style="text-align:right;margin:-4px 0 18px;"><span style="font-size:12px;color:var(--cyan);cursor:pointer;">Forgot password?</span></div>
+          <button class="primary-btn">Sign In</button>
+          <button class="text-btn">Create Account</button>
+          <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--muted);">By continuing you agree to our <span style="color:var(--cyan);">Terms</span> &amp; <span style="color:var(--cyan);">Privacy Policy</span></div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="page" id="screen-1">
+        <div class="page-header">
+          <div><div style="font-size:12px;color:var(--muted);">Good morning,</div><div style="font-size:20px;font-weight:700;color:var(--text);">Alex</div></div>
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#07090F;">AK</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-label">Monthly Usage</div>
+          <div class="hero-value">482.5<span style="font-size:18px;color:var(--sub);"> kWh</span></div>
+          <div class="hero-sub">+12% vs last month · 12 days left</div>
+          <div class="bill-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="var(--green)"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10" stroke="var(--green)" stroke-width="2" fill="none"/></svg><span>Est. bill: LKR 4,280.50</span></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-label">Today</div><div class="stat-value">14.2<span class="stat-unit"> kWh</span></div><div class="stat-change" style="color:var(--red);">▲ 1.8 vs avg</div></div>
+          <div class="stat-card"><div class="stat-label">Rate / Unit</div><div class="stat-value" style="font-size:16px;margin-top:2px;">LKR <span style="font-size:22px;">32</span></div><div class="stat-change" style="color:var(--muted);">Block 3 tariff</div></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Weekly Consumption</div><div class="see-all">Monthly ›</div></div>
+          <div class="card">
+            <div class="chart-wrap">
+              <div class="bar-group"><div class="bar" style="height:52%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Mon</div></div>
+              <div class="bar-group"><div class="bar" style="height:70%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Tue</div></div>
+              <div class="bar-group"><div class="bar" style="height:45%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Wed</div></div>
+              <div class="bar-group"><div class="bar" style="height:80%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Thu</div></div>
+              <div class="bar-group"><div class="bar" style="height:65%;background:var(--cyan);"></div><div class="bar-label" style="color:var(--cyan);">Fri</div></div>
+              <div class="bar-group"><div class="bar" style="height:50%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Sat</div></div>
+              <div class="bar-group"><div class="bar" style="height:38%;background:rgba(0,212,255,.2);"></div><div class="bar-label">Sun</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Recent Activity</div><div class="see-all">View all ›</div></div>
+          <div class="card">
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(245,158,11,.1);"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--amber)"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 3a1 1 0 0 1 1 1v6l4 2-1 1.7-5-2.7V6a1 1 0 0 1 1-1z"/></svg></div>
+              <div style="flex:1;"><div class="activity-name">Peak Cooking Hour</div><div class="activity-time">Today, 7:00 PM</div></div>
+              <div class="activity-units" style="color:var(--amber);">3.4 kWh</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(0,212,255,.1);"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+              <div style="flex:1;"><div class="activity-name">EV Smart Charge</div><div class="activity-time">Today, 2:00 AM</div></div>
+              <div class="activity-units" style="color:var(--cyan);">22.8 kWh</div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon" style="background:rgba(0,229,160,.1);"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+              <div style="flex:1;"><div class="activity-name">Climate Control</div><div class="activity-time">Yesterday, 9:00 PM</div></div>
+              <div class="activity-units" style="color:var(--green);">4.5 kWh</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="page" id="screen-2">
+        <div class="page-header"><div class="page-title">Log Reading</div><span style="font-size:13px;color:var(--cyan);cursor:pointer;">History</span></div>
+        <div class="log-section">
+          <div class="log-label">Meter Reading</div>
+          <div class="meter-input-wrap">
+            <div class="digit-box">0</div><div class="digit-box">4</div><div class="digit-box">8</div>
+            <div class="digit-sep">.</div>
+            <div class="digit-box active">2</div><div class="digit-box active" style="border-color:rgba(0,212,255,.3);color:var(--muted);">7</div>
+          </div>
+          <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--muted);">Previous: 034.50 · Used: <span style="color:var(--cyan);font-family:var(--mono);">13.77 kWh</span></div>
+        </div>
+        <div class="log-section">
+          <div class="log-label">Photo Proof</div>
+          <div class="camera-btn">
+            <div style="width:38px;height:38px;border-radius:50%;background:rgba(0,212,255,.1);display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M12 15.2A3.2 3.2 0 1 1 15.2 12 3.2 3.2 0 0 1 12 15.2M9 2L7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2z"/></svg></div>
+            <span style="font-size:13px;color:var(--sub);">Tap to capture meter photo</span>
+            <span style="font-size:11px;color:var(--muted);">AI will auto-extract reading</span>
+          </div>
+        </div>
+        <div class="log-section">
+          <div class="log-label">Active Appliances</div>
+          <div class="appliance-grid">
+            <div class="appliance-chip sel"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg><span>Kitchen</span></div>
+            <div class="appliance-chip sel"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg><span>Lighting</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg><span>HVAC</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><span>EV Charge</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M20 6H4v2h16V6zm-2-2H6v2h12V4zM4 10v11h16V10H4zm14 9H6v-7h12v7z"/></svg><span>Laundry</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg><span>Office</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M21 6.5c0-2.5-2-4.5-4.5-4.5-1.7 0-3.2.9-4 2.3C11.7 2.9 10.2 2 8.5 2 6 2 4 4 4 6.5c0 .8.2 1.5.5 2.1L12 21l7.5-12.4c.3-.6.5-1.3.5-2.1z"/></svg><span>Water</span></div>
+            <div class="appliance-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--muted)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span>Entertain</span></div>
+          </div>
+        </div>
+        <div class="log-section">
+          <div class="log-label">Note (optional)</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--muted);">Add a note about this reading...</div>
+        </div>
+        <button class="log-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="#07090F"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Confirm &amp; Log Reading</button>
+      </div>
+
+      <!-- RECORDS -->
+      <div class="page" id="screen-3">
+        <div class="page-header"><div class="page-title">Records</div><div style="display:flex;gap:12px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--sub)"><path d="M10 18h4v-2h-4v2zm-7-5v2h18v-2H3zm3-4h12V7H6v2z"/></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="var(--sub)"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5z"/></svg></div></div>
+        <div class="filter-row">
+          <div class="filter-chip on">All</div>
+          <div class="filter-chip off">Verified</div>
+          <div class="filter-chip off">Pending</div>
+        </div>
+        <div class="record-card">
+          <div class="record-top"><div><div class="record-date">Oct 29, 2023</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">7:30 PM · 3 appliances</div></div><div class="record-badge badge-v">✓ Verified</div></div>
+          <div class="record-stats"><div class="record-stat"><label>Reading</label><div class="val">048.27</div></div><div class="record-stat"><label>Used</label><div class="val cy">13.77 kWh</div></div><div class="record-stat"><label>Cost</label><div class="val">LKR 441</div></div></div>
+          <div class="a-tags"><div class="a-tag">Kitchen</div><div class="a-tag">Lighting</div><div class="a-tag">HVAC</div></div>
+        </div>
+        <div class="record-card">
+          <div class="record-top"><div><div class="record-date">Oct 22, 2023</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">8:15 AM · 5 appliances</div></div><div class="record-badge badge-v">✓ Verified</div></div>
+          <div class="record-stats"><div class="record-stat"><label>Reading</label><div class="val">034.50</div></div><div class="record-stat"><label>Used</label><div class="val cy">18.20 kWh</div></div><div class="record-stat"><label>Cost</label><div class="val">LKR 582</div></div></div>
+          <div class="a-tags"><div class="a-tag">EV Charge</div><div class="a-tag">Kitchen</div><div class="a-tag">Laundry</div><div class="a-tag">+2</div></div>
+        </div>
+        <div class="record-card">
+          <div class="record-top"><div><div class="record-date">Oct 15, 2023</div><div style="font-size:11px;color:var(--muted);margin-top:1px;">6:45 PM · 2 appliances</div></div><div class="record-badge badge-p">● Pending</div></div>
+          <div class="record-stats"><div class="record-stat"><label>Reading</label><div class="val">016.30</div></div><div class="record-stat"><label>Used</label><div class="val cy">10.40 kWh</div></div><div class="record-stat"><label>Cost</label><div class="val">LKR 333</div></div></div>
+          <div class="a-tags"><div class="a-tag">Lighting</div><div class="a-tag">Office</div></div>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="page" id="screen-4">
+        <div class="page-header"><div class="page-title">Payments</div><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--sub)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+        <div class="payment-hero">
+          <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;">October 2023</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Due: 28 Oct · 482.5 kWh used</div>
+          <div class="payment-amount">LKR 4,280.50</div>
+          <div style="display:flex;gap:18px;margin:10px 0 14px;">
+            <div><div style="font-size:10px;color:var(--muted);">Last units</div><div style="font-family:var(--mono);font-size:14px;color:var(--text);">8,912</div></div>
+            <div><div style="font-size:10px;color:var(--muted);">Account</div><div style="font-size:14px;color:var(--text);">CEB-0042817</div></div>
+          </div>
+          <div style="display:flex;gap:10px;"><button class="pay-btn">Pay Now</button><button class="invoice-btn">Invoice</button></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Payment History</div><div class="see-all">Export ›</div></div>
+          <div class="card">
+            <div class="payment-hist-item"><div class="ph-dot" style="background:var(--green);"></div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--text);">September 2023</div><div style="font-size:11px;color:var(--muted);">Paid 25 Sep · Bank transfer</div></div><div style="text-align:right;"><div style="font-family:var(--mono);font-size:14px;color:var(--text);">LKR 3,813</div><div style="font-size:10px;color:var(--green);margin-top:1px;">● Paid</div></div></div>
+            <div class="payment-hist-item"><div class="ph-dot" style="background:var(--green);"></div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--text);">August 2023</div><div style="font-size:11px;color:var(--muted);">Paid 22 Aug · Bank transfer</div></div><div style="text-align:right;"><div style="font-family:var(--mono);font-size:14px;color:var(--text);">LKR 2,913</div><div style="font-size:10px;color:var(--green);margin-top:1px;">● Paid</div></div></div>
+            <div class="payment-hist-item"><div class="ph-dot" style="background:var(--amber);"></div><div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--text);">July 2023</div><div style="font-size:11px;color:var(--muted);">Late · Paid 5 Aug</div></div><div style="text-align:right;"><div style="font-family:var(--mono);font-size:14px;color:var(--text);">LKR 4,835</div><div style="font-size:10px;color:var(--amber);margin-top:1px;">● Late</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="screen-5">
+        <div class="page-header"><div class="page-title">Reports &amp; Export</div></div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Date Range</div></div>
+          <div class="card" style="display:flex;gap:10px;align-items:center;">
+            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;"><div style="font-size:10px;color:var(--muted);">From</div><div style="font-size:14px;font-weight:600;color:var(--text);font-family:var(--mono);">01 Oct 2023</div></div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--muted)"><path d="M8 5v14l11-7z"/></svg>
+            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;"><div style="font-size:10px;color:var(--muted);">To</div><div style="font-size:14px;font-weight:600;color:var(--text);font-family:var(--mono);">31 Oct 2023</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title" style="margin-bottom:10px;">Export Format</div>
+          <div class="export-card" onclick="triggerDownload('excel')">
+            <div class="export-icon" style="background:rgba(0,229,160,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--green)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 12.5l1.5 2.5L8 17.5h1.5l1-1.75L11.5 17.5H13l-1.5-2.5L13 12.5h-1.5l-1 1.75-1-1.75H8zm5.5 0v5H15v-1.5h1.5V15H15v-1h1.5v-1.5h-3z"/></svg>
+            </div>
+            <div class="export-info">
+              <div class="export-name">Excel Spreadsheet</div>
+              <div class="export-desc">Full data · readings, costs, appliances</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--green)"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7v2h14v-2H5z"/></svg>
+          </div>
+          <div class="export-card" onclick="triggerDownload('csv')">
+            <div class="export-icon" style="background:rgba(0,212,255,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM7 12h2v2H7v-2zm0 4h2v2H7v-2zm3-4h7v2h-7v-2zm0 4h5v2h-5v-2z"/></svg>
+            </div>
+            <div class="export-info">
+              <div class="export-name">CSV File</div>
+              <div class="export-desc">Raw data · import to any spreadsheet</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7v2h14v-2H5z"/></svg>
+          </div>
+          <div class="export-card" onclick="triggerDownload('pdf')">
+            <div class="export-icon" style="background:rgba(255,77,106,.1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--red)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h1.5v2H11v-2h1l-2 4-2-4zm4.5 0H14a1.5 1.5 0 0 1 0 3h-.5v1H12v-4zm1.5 2a.5.5 0 0 0 0-1h-.5v1h.5z"/></svg>
+            </div>
+            <div class="export-info">
+              <div class="export-name">PDF Report</div>
+              <div class="export-desc">Formatted · ready to print or share</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--red)"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7v2h14v-2H5z"/></svg>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title" style="margin-bottom:10px;">Auto Reports</div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0 10px;border-bottom:1px solid var(--border);">
+              <div><div style="font-size:14px;font-weight:500;color:var(--text);">Monthly email report</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Sent on 1st of each month</div></div>
+              <button class="android-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;">
+              <div><div style="font-size:14px;font-weight:500;color:var(--text);">Weekly summary</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Every Monday morning</div></div>
+              <button class="android-toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+        </div>
+        <!-- Toast notification -->
+        <div class="download-toast" id="dlToast">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#07090F"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7v2h14v-2H5z"/></svg>
+          <span id="dlToastText">Downloading...</span>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="screen-6">
+        <div class="profile-row">
+          <div class="profile-avatar">AK</div>
+          <div><div class="profile-name">Alex Karunarathne</div><div class="profile-email">alex@example.com · CEB-0042817</div></div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Appearance</div>
+          <div class="card">
+            <div class="setting-item">
+              <div><div class="setting-name">Dark Mode</div><div class="setting-sub">Switch between light &amp; dark theme</div></div>
+              <button class="android-toggle on" id="inAppThemeBtn" onclick="toggleInAppTheme(this)"></button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Billing</div>
+          <div class="card">
+            <div class="setting-item">
+              <div><div class="setting-name">Rate per Unit</div><div class="setting-sub" id="rateDisplay">LKR 32.00 / kWh</div></div>
+              <span style="font-size:13px;color:var(--cyan);cursor:pointer;">Edit</span>
+            </div>
+            <div class="setting-item" style="border-bottom:none;">
+              <div><div class="setting-name">CEB Account No.</div><div class="setting-sub">CEB-0042817</div></div>
+              <span style="font-size:13px;color:var(--cyan);cursor:pointer;">Edit</span>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Notifications</div>
+          <div class="card">
+            <div class="setting-item">
+              <div><div class="setting-name">Bill reminders</div><div class="setting-sub">3 days before due date</div></div>
+              <button class="android-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-item">
+              <div><div class="setting-name">Usage alerts</div><div class="setting-sub">When daily usage exceeds avg</div></div>
+              <button class="android-toggle on" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div class="setting-item" style="border-bottom:none;">
+              <div><div class="setting-name">Weekly digest</div><div class="setting-sub">Every Sunday at 9 AM</div></div>
+              <button class="android-toggle" onclick="this.classList.toggle('on')"></button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-title">Account</div>
+          <div class="card">
+            <div class="setting-item"><div class="setting-name">Change password</div><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--muted)"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+            <div class="setting-item"><div class="setting-name">Export all data</div><svg width="16" height="16" viewBox="0 0 24 24" fill="var(--muted)"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg></div>
+            <div class="setting-item" style="border-bottom:none;"><div class="setting-name" style="color:var(--red);">Sign out</div></div>
+          </div>
+        </div>
+        <div style="height:16px;"></div>
+      </div>
+    </div>
+
+    <!-- Android bottom nav -->
+    <div class="bottom-nav">
+      <button class="nav-btn active" id="nav-1" onclick="navTo(1,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><div class="nav-pill"></div></button>
+      <button class="nav-btn" id="nav-2" onclick="navTo(2,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><div class="nav-pill"></div></button>
+      <button class="nav-btn" id="nav-3" onclick="navTo(3,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg><div class="nav-pill"></div></button>
+      <button class="nav-btn" id="nav-4" onclick="navTo(4,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><div class="nav-pill"></div></button>
+      <button class="nav-btn" id="nav-5" onclick="navTo(5,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM7 12h2v2H7v-2zm0 4h2v2H7v-2zm3-4h7v2h-7v-2zm0 4h5v2h-5v-2z"/></svg><div class="nav-pill"></div></button>
+      <button class="nav-btn" id="nav-6" onclick="navTo(6,this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg><div class="nav-pill"></div></button>
+    </div>
+  </div>
+</div>
+
+<script>
+var isDark=true;
+var phone=document.getElementById('phoneRoot');
+
+function toggleInAppTheme(btn){
+  isDark=!isDark;
+  btn.classList.toggle('on',isDark);
+  phone.classList.toggle('light',!isDark);
+}
+
+function showScreen(idx,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('screen-'+idx).classList.add('active');
+  document.querySelectorAll('.stab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  var navId=idx>=1?'nav-'+idx:null;
+  if(navId&&document.getElementById(navId))document.getElementById(navId).classList.add('active');
+}
+
+function navTo(idx,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('screen-'+idx).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  document.querySelectorAll('.stab').forEach(function(t,i){t.classList.toggle('active',i===idx);});
+}
+
+function triggerDownload(type){
+  var labels={excel:'ECB_Report_Oct2023.xlsx',csv:'ECB_Report_Oct2023.csv',pdf:'ECB_Report_Oct2023.pdf'};
+  var toast=document.getElementById('dlToast');
+  document.getElementById('dlToastText').textContent='Downloading '+labels[type]+'...';
+  toast.classList.add('show');
+  setTimeout(function(){toast.classList.remove('show');},3000);
+  // Actual download: generate a tiny CSV blob as demo
+  if(type==='excel'||type==='csv'){
+    var csv='Date,Reading,Used (kWh),Cost (LKR),Appliances\n';
+    csv+='29 Oct 2023,048.27,13.77,441,Kitchen|Lighting|HVAC\n';
+    csv+='22 Oct 2023,034.50,18.20,582,EV Charge|Kitchen|Laundry\n';
+    csv+='15 Oct 2023,016.30,10.40,333,Lighting|Office\n';
+    var blob=new Blob([csv],{type:'text/csv'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=labels[type==='excel'?'csv':type]||labels.csv;
+    a.click();
+  }
+}
+</script>
+</body>
+</html>
