@@ -111,10 +111,9 @@ fun RecordsScreen(
                     items = uiState.entries,
                     key = { it.id ?: it.hashCode() }
                 ) { entry ->
-                    // Wrapping in SwipeToDismiss (simplified setup for M3)
-                    val dismissState = rememberDismissState(
+                    val dismissState = rememberSwipeToDismissBoxState(
                         confirmValueChange = {
-                            if (it == DismissValue.DismissedToStart) {
+                            if (it == SwipeToDismissBoxValue.EndToStart) {
                                 entry.id?.let { id -> viewModel.deleteEntry(id) }
                                 true
                             } else {
@@ -123,9 +122,9 @@ fun RecordsScreen(
                         }
                     )
 
-                    SwipeToDismiss(
+                    SwipeToDismissBox(
                         state = dismissState,
-                        background = {
+                        backgroundContent = {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -138,10 +137,10 @@ fun RecordsScreen(
                                 Text("Delete", color = Color.White, fontWeight = FontWeight.Bold)
                             }
                         },
-                        dismissContent = {
+                        enableDismissFromStartToEnd = false,
+                        content = {
                             RecordItem(entry, uiState.ratePerUnit)
-                        },
-                        directions = setOf(DismissDirection.EndToStart)
+                        }
                     )
                 }
             }

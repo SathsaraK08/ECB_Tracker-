@@ -28,3 +28,8 @@ val Red = Color(0xFFFF4D6A)
 val Amber = Color(0xFFF59E0B)
 val OnPrimary = Color(0xFF07090F)
 val Muted = Color(0xFF4A6080)
+
+val SurfaceDark = Color(0xFF0D1117)
+val CyanDim = Color(0xFF003D4D)
+val GreenDim = Color(0xFF003D2E)
+val AmberDim = Color(0xFF3D2700)

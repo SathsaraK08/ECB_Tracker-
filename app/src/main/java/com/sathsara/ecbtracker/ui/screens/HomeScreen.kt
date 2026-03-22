@@ -118,7 +118,7 @@ fun HomeScreen(
 
                     VerticalSpacer(8)
 
-                    Row(crossAxisAlignment = Alignment.Bottom) {
+                    Row(verticalAlignment = Alignment.Bottom) {
                         if (uiState.isLoading) {
                             LoadingSkeleton(modifier = Modifier.height(36.dp).width(120.dp))
                         } else {

@@ -16,17 +16,17 @@ class AuthRepository @Inject constructor(
         it is io.github.jan.supabase.auth.status.SessionStatus.Authenticated
     }
 
-    suspend fun signIn(email: String, password: String) = Result.runCatching {
+    suspend fun signIn(emailInput: String, passwordInput: String) = Result.runCatching {
         supabase.auth.signInWith(Email) {
-            this.email = email
-            this.password = password
+            email = emailInput
+            password = passwordInput
         }
     }
 
-    suspend fun signUp(email: String, password: String) = Result.runCatching {
+    suspend fun signUp(emailInput: String, passwordInput: String) = Result.runCatching {
         supabase.auth.signUpWith(Email) {
-            this.email = email
-            this.password = password
+            email = emailInput
+            password = passwordInput
         }
     }
 
