@@ -38,9 +38,10 @@ class LogViewModel @Inject constructor(
         loadPreviousReading()
     }
 
+    @OptIn(kotlin.time.ExperimentalTime::class)
     private fun loadPreviousReading() {
         viewModelScope.launch {
-            val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val dateStr = currentMoment.date.toString()
             
             val prevEntry = entryRepository.getLatestEntryBefore(dateStr).getOrNull()
@@ -98,7 +99,7 @@ class LogViewModel @Inject constructor(
             }
 
             val usedAmount = parsedDouble - state.previousUnit
-            val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val timeStr = "${currentMoment.hour.toString().padStart(2, '0')}:${currentMoment.minute.toString().padStart(2, '0')}"
 
             val entry = Entry(

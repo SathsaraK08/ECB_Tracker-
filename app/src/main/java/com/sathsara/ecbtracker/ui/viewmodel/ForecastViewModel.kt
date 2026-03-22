@@ -33,11 +33,12 @@ class ForecastViewModel @Inject constructor(
         loadForecast()
     }
 
+    @OptIn(kotlin.time.ExperimentalTime::class)
     fun loadForecast() {
         viewModelScope.launch {
             _uiState.value = ForecastUiState(isLoading = true)
             
-            val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
             val yearMonthStr = "${currentMoment.year}-$monthStr"
 
