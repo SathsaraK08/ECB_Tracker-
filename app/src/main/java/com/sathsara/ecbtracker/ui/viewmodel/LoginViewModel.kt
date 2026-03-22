@@ -29,7 +29,9 @@ class LoginViewModel @Inject constructor(
             _uiState.value = LoginUiState(isLoading = true)
             authRepository.signIn(email, pass)
                 .onSuccess { _uiState.value = LoginUiState(isSuccess = true) }
-                .onFailure { _uiState.value = LoginUiState(error = it.message ?: "Sign in failed") }
+                .onFailure {
+                    _uiState.value = LoginUiState(error = it.message ?: "Sign in failed")
+                }
         }
     }
 
@@ -38,7 +40,9 @@ class LoginViewModel @Inject constructor(
             _uiState.value = LoginUiState(isLoading = true)
             authRepository.signUp(email, pass)
                 .onSuccess { _uiState.value = LoginUiState(isSuccess = true) }
-                .onFailure { _uiState.value = LoginUiState(error = it.message ?: "Sign up failed") }
+                .onFailure {
+                    _uiState.value = LoginUiState(error = it.message ?: "Sign up failed")
+                }
         }
     }
 

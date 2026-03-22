@@ -34,9 +34,8 @@ class PaymentRepository @Inject constructor(
 
     suspend fun insertOrUpdatePayment(payment: Payment): Result<Unit> = withContext(Dispatchers.IO) {
         Result.runCatching {
-            paymentsTable.upsert(payment) {
-                // Upsert handles both insert and update if the primary key exists
-            }
+            paymentsTable.upsert(payment)
+            Unit
         }
     }
 

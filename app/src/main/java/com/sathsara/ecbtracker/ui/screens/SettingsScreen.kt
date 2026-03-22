@@ -16,7 +16,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sathsara.ecbtracker.ui.components.SecondaryOutlineButton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Cyan
+import com.sathsara.ecbtracker.ui.theme.CyanDim
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,7 +109,7 @@ fun SettingsScreen(
                 checked = isDarkMode,
                 onCheckedChange = { viewModel.toggleDarkMode(it) }
             )
-            Divider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
             
             // Electricity Rate Input (Simplified for Compose view)
             var rateText by remember(uiState.settings?.lkrPerUnit) { mutableStateOf(uiState.settings?.lkrPerUnit?.toString() ?: "32.0") }
@@ -150,7 +154,7 @@ fun SettingsScreen(
                 checked = billReminders,
                 onCheckedChange = { viewModel.toggleBillReminders(it) }
             )
-            Divider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
             SettingsToggleRow(
                 title = "High Usage Alerts",
                 subtitle = "Notify when usage spikes",
@@ -171,12 +175,12 @@ fun SettingsScreen(
         )
 
         SettingsCard {
-            Row(modifier = Modifier.fillMaxWidth().clickable { /* TODO */ }.padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Edit Profile", color = MaterialTheme.colorScheme.onBackground)
                 Text(">", color = Muted)
             }
-            Divider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
-            Row(modifier = Modifier.fillMaxWidth().clickable { /* TODO */ }.padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha=0.3f), modifier = Modifier.padding(vertical = 12.dp))
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("CEB Account Number", color = MaterialTheme.colorScheme.onBackground)
                 Text(uiState.settings?.accountNumber ?: "Add", color = Cyan)
             }

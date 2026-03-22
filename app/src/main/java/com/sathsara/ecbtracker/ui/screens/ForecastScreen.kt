@@ -18,7 +18,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sathsara.ecbtracker.ui.components.LoadingSkeleton
 import com.sathsara.ecbtracker.ui.components.PrimaryButton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Amber
+import com.sathsara.ecbtracker.ui.theme.AmberDim
+import com.sathsara.ecbtracker.ui.theme.Cyan
+import com.sathsara.ecbtracker.ui.theme.DmMonoFamily
+import com.sathsara.ecbtracker.ui.theme.Green
+import com.sathsara.ecbtracker.ui.theme.GreenDim
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.Purple
+import com.sathsara.ecbtracker.ui.theme.Red
+import androidx.compose.ui.graphics.Color
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.ForecastViewModel
 
 @Composable
@@ -128,7 +139,7 @@ fun ForecastScreen(
                         val (badgeBg, badgeText) = when (forecast.efficiencyRating.lowercase()) {
                             "high" -> Pair(GreenDim, Green)
                             "medium" -> Pair(AmberDim, Amber)
-                            else -> Pair(Color(0xFF450a0a), Red) // RedDim equivalent
+                            else -> Pair(Color(0xFF450A0A), Red)
                         }
                         
                         Box(
@@ -151,7 +162,7 @@ fun ForecastScreen(
                         Text("LKR ", fontSize = 16.sp, color = Muted, modifier = Modifier.padding(bottom = 6.dp))
                         Text(
                             text = String.format("%,.0f", forecast.projectedBill),
-                            fontFamily = DMMonoFamily,
+                            fontFamily = DmMonoFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 36.sp,
                             color = Cyan
@@ -206,7 +217,7 @@ fun ForecastScreen(
                             )
                             Text(
                                 text = "-LKR ${String.format("%,.0f", tip.savingLkr)}",
-                                fontFamily = DMMonoFamily,
+                                fontFamily = DmMonoFamily,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 15.sp,
                                 color = Green

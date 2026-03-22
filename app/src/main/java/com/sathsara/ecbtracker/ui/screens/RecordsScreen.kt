@@ -19,7 +19,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sathsara.ecbtracker.data.model.Entry
 import com.sathsara.ecbtracker.ui.components.LoadingSkeleton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Amber
+import com.sathsara.ecbtracker.ui.theme.AmberDim
+import com.sathsara.ecbtracker.ui.theme.Cyan
+import com.sathsara.ecbtracker.ui.theme.DmMonoFamily
+import com.sathsara.ecbtracker.ui.theme.Green
+import com.sathsara.ecbtracker.ui.theme.GreenDim
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.Red
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.FilterMode
 import com.sathsara.ecbtracker.ui.viewmodel.RecordsViewModel
 
@@ -196,7 +205,7 @@ fun RecordItem(entry: Entry, ratePerUnit: Double) {
                     Text("Reading", fontSize = 11.sp, color = Muted)
                     Text(
                         text = entry.unit.toString(),
-                        fontFamily = DMMonoFamily,
+                        fontFamily = DmMonoFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground
@@ -207,7 +216,7 @@ fun RecordItem(entry: Entry, ratePerUnit: Double) {
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(
                             text = "+${String.format("%.1f", entry.used)}",
-                            fontFamily = DMMonoFamily,
+                            fontFamily = DmMonoFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
                             color = Cyan
@@ -219,7 +228,7 @@ fun RecordItem(entry: Entry, ratePerUnit: Double) {
                     Text("Est. Cost", fontSize = 11.sp, color = Muted)
                     Text(
                         text = "LKR ${String.format("%,.0f", estimatedCost)}",
-                        fontFamily = DMMonoFamily,
+                        fontFamily = DmMonoFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground

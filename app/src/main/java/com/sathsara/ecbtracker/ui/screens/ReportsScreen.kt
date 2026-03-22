@@ -20,7 +20,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sathsara.ecbtracker.ui.components.PrimaryButton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Cyan
+import com.sathsara.ecbtracker.ui.theme.CyanDim
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.ReportsViewModel
 
 @Composable

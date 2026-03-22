@@ -32,6 +32,7 @@ class SettingsRepository @Inject constructor(
             val finalSettings = settings.copy(userId = userId)
             
             settingsTable.upsert(finalSettings)
+            Unit
         }
     }
 
@@ -51,6 +52,7 @@ class SettingsRepository @Inject constructor(
             val finalProfile = profile.copy(id = userId)
             
             profilesTable.upsert(finalProfile)
+            Unit
         }
     }
 }

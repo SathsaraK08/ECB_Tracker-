@@ -24,10 +24,12 @@ class EntryRepository @Inject constructor(
     ): Result<List<Entry>> = withContext(Dispatchers.IO) {
         Result.runCatching {
             entriesTable.select {
-                if (isVerified == true) {
-                    filter { Entry::imgUrl.name.isNotNull() }
-                } else if (isVerified == false) {
-                    filter { Entry::imgUrl.name.isNull() }
+                filter {
+                    if (isVerified == true) {
+                        neq("img_url", null)
+                    } else if (isVerified == false) {
+                        eq("img_url", null)
+                    }
                 }
                 order("date", Order.DESCENDING)
                 order("time", Order.DESCENDING)
@@ -89,6 +91,7 @@ class EntryRepository @Inject constructor(
             
             val finalEntry = entry.copy(imgUrl = imgUrl)
             entriesTable.insert(finalEntry)
+            Unit
         }
     }
 
@@ -97,6 +100,7 @@ class EntryRepository @Inject constructor(
             entriesTable.delete {
                 filter { eq("id", id) }
             }
+            Unit
         }
     }
     

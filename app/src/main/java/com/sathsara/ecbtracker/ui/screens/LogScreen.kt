@@ -25,7 +25,13 @@ import androidx.navigation.NavController
 import com.sathsara.ecbtracker.R
 import com.sathsara.ecbtracker.ui.components.PrimaryButton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Cyan
+import com.sathsara.ecbtracker.ui.theme.CyanDim
+import com.sathsara.ecbtracker.ui.theme.DmMonoFamily
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.Red
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.LogViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +83,7 @@ fun LogScreen(
             Text("Previous Reading:", color = Muted, fontSize = 14.sp)
             Text(
                 text = "${uiState.previousUnit}",
-                fontFamily = DMMonoFamily,
+                fontFamily = DmMonoFamily,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -229,7 +235,7 @@ fun DigitBox(digit: String, isDecimal: Boolean) {
         
         Text(
             text = digit,
-            fontFamily = DMMonoFamily,
+            fontFamily = DmMonoFamily,
             fontWeight = FontWeight.Bold,
             fontSize = if (isDecimal) 24.sp else 32.sp,
             color = textColor

@@ -21,7 +21,14 @@ import com.sathsara.ecbtracker.ui.components.LoadingSkeleton
 import com.sathsara.ecbtracker.ui.components.PrimaryButton
 import com.sathsara.ecbtracker.ui.components.SecondaryOutlineButton
 import com.sathsara.ecbtracker.ui.components.VerticalSpacer
-import com.sathsara.ecbtracker.ui.theme.*
+import com.sathsara.ecbtracker.ui.theme.Amber
+import com.sathsara.ecbtracker.ui.theme.AmberDim
+import com.sathsara.ecbtracker.ui.theme.DmMonoFamily
+import com.sathsara.ecbtracker.ui.theme.Green
+import com.sathsara.ecbtracker.ui.theme.GreenDim
+import com.sathsara.ecbtracker.ui.theme.Muted
+import com.sathsara.ecbtracker.ui.theme.OutfitFamily
+import com.sathsara.ecbtracker.ui.theme.SurfaceDark
 import com.sathsara.ecbtracker.ui.viewmodel.PaymentsViewModel
 
 @Composable
@@ -100,7 +107,7 @@ fun PaymentsScreen(
                         Text("LKR ", fontSize = 16.sp, color = Muted, modifier = Modifier.padding(bottom = 6.dp))
                         Text(
                             text = String.format("%,.0f", uiState.currentBillAmount),
-                            fontFamily = DMMonoFamily,
+                            fontFamily = DmMonoFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 36.sp,
                             color = MaterialTheme.colorScheme.onBackground
@@ -200,7 +207,7 @@ fun PaymentItem(payment: Payment) {
         Column(horizontalAlignment = Alignment.End) {
             Text(
                 text = "LKR ${String.format("%,.0f", payment.billAmount)}",
-                fontFamily = DMMonoFamily,
+                fontFamily = DmMonoFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground

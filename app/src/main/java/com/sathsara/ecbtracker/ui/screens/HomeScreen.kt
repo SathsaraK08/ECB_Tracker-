@@ -30,7 +30,7 @@ import com.sathsara.ecbtracker.ui.components.VerticalSpacer
 import com.sathsara.ecbtracker.ui.navigation.Screen
 import com.sathsara.ecbtracker.ui.theme.Cyan
 import com.sathsara.ecbtracker.ui.theme.CyanDim
-import com.sathsara.ecbtracker.ui.theme.DMMonoFamily
+import com.sathsara.ecbtracker.ui.theme.DmMonoFamily
 import com.sathsara.ecbtracker.ui.theme.Green
 import com.sathsara.ecbtracker.ui.theme.GreenDim
 import com.sathsara.ecbtracker.ui.theme.Muted
@@ -124,7 +124,7 @@ fun HomeScreen(
                         } else {
                             Text(
                                 text = String.format("%.1f", uiState.monthlyKwh),
-                                fontFamily = DMMonoFamily,
+                                fontFamily = DmMonoFamily,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 36.sp,
                                 color = MaterialTheme.colorScheme.onBackground
@@ -154,7 +154,7 @@ fun HomeScreen(
                         } else {
                             Text(
                                 text = "LKR ${String.format("%,.0f", uiState.estimatedBill)}",
-                                fontFamily = DMMonoFamily,
+                                fontFamily = DmMonoFamily,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                                 color = Cyan
@@ -212,16 +212,17 @@ fun HomeScreen(
                     .background(SurfaceDark, RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ) {
+                val chartData = uiState.chartData
                 if (uiState.isLoading) {
                     LoadingSkeleton(modifier = Modifier.fillMaxSize())
-                } else if (uiState.chartData.isEmpty()) {
+                } else if (chartData.isEmpty()) {
                     Text(
                         "No data for this week", 
                         color = Muted, 
                         modifier = Modifier.align(Alignment.Center)
                     )
                 } else {
-                    SimpleBarChart(data = uiState.chartData)
+                    SimpleBarChart(data = chartData, modifier = Modifier.fillMaxSize())
                 }
             }
             VerticalSpacer(24)
@@ -287,7 +288,7 @@ fun StatCard(
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     text = value,
-                    fontFamily = DMMonoFamily,
+                    fontFamily = DmMonoFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
@@ -304,11 +305,12 @@ fun StatCard(
 }
 
 @Composable
-fun SimpleBarChart(data: List<Pair<String, Float>>) {
+fun SimpleBarChart(data: List<Pair<String, Float>>, modifier: Modifier = Modifier) {
     // simplified drawing mimicking the HTML chart
     val maxVal = data.maxOfOrNull { it.second }?.coerceAtLeast(1f) ?: 1f
+    val outlineColor = MaterialTheme.colorScheme.outline
     
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    Canvas(modifier = modifier) {
         val width = size.width
         val height = size.height
         val barWidth = 14.dp.toPx()
@@ -319,7 +321,7 @@ fun SimpleBarChart(data: List<Pair<String, Float>>) {
             val x = spacing + (i * (barWidth + spacing))
             val y = height - barHeight - 20.dp.toPx()
             
-            val color = if (i == data.size - 1) Cyan else MaterialTheme.colorScheme.outline
+            val color = if (i == data.size - 1) Cyan else outlineColor
             
             drawRoundRect(
                 color = color,
@@ -330,7 +332,7 @@ fun SimpleBarChart(data: List<Pair<String, Float>>) {
             
             // Draw day label (e.g. "Mon" from date)
             // Simplified: just taking last char of date string for now to match visual
-            val dayLabel = entry.first.takeLast(2) 
+            // val dayLabel = entry.first.takeLast(2)
         }
     }
 }
@@ -374,7 +376,7 @@ fun ActivityItem(entry: Entry) {
         Column(horizontalAlignment = Alignment.End) {
             Text(
                 text = "+${String.format("%.1f", entry.used)}",
-                fontFamily = DMMonoFamily,
+                fontFamily = DmMonoFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground
