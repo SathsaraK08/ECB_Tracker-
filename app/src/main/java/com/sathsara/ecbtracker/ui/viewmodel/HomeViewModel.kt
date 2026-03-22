@@ -35,10 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    init {
-        loadDashboardData()
-    }
-
+    @OptIn(kotlin.time.ExperimentalTime::class)
     fun loadDashboardData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -51,7 +48,7 @@ class HomeViewModel @Inject constructor(
             val rate = settings?.lkrPerUnit ?: 32.0
             
             // Generate current month string e.g. "2023-10"
-            val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
             val yearMonth = "${currentMoment.year}-$monthStr"
             val todayStr = currentMoment.date.toString()
