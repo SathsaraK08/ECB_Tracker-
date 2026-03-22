@@ -3,6 +3,7 @@ package com.sathsara.ecbtracker.data.repository
 import com.sathsara.ecbtracker.data.model.Profile
 import com.sathsara.ecbtracker.data.model.UserSettings
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
