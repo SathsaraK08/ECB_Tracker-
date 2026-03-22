@@ -22,9 +22,9 @@ android {
             useSupportLibrary true
         }
 
-        buildConfigField "String", "SUPABASE_URL", '"https://hehiyadhbvlflucpaimh.supabase.co"'
-        buildConfigField "String", "SUPABASE_ANON_KEY", '"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhlaGl5YWRoYnZsZmx1Y3BhaW1oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMDUxNDcsImV4cCI6MjA4OTY4MTE0N30.XNRi2Z1coc3YMw7IKYELMrUclPxP0CnMwNcpEw-HQLA"'
-        buildConfigField "String", "GEMINI_API_KEY", '"AIzaSyAruyrzY-YjnvMj9hh3sz1DlouTdt-bkNY"'
+        buildConfigField "String", "SUPABASE_URL", '"' + (project.findProperty("SUPABASE_URL") ?: "") + '"'
+        buildConfigField "String", "SUPABASE_ANON_KEY", '"' + (project.findProperty("SUPABASE_ANON_KEY") ?: "") + '"'
+        buildConfigField "String", "GEMINI_API_KEY", '"' + (project.findProperty("GEMINI_API_KEY") ?: "") + '"'
     }
 
     buildTypes {
@@ -39,9 +39,7 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+
 
     buildFeatures {
         compose true
@@ -49,7 +47,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.5'
+        kotlinCompilerExtensionVersion = '1.5.14'
     }
 
     packaging {
@@ -68,12 +66,13 @@ android {
 
 dependencies {
     // Core
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.activity:activity-compose:1.8.2'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.21'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.activity:activity-compose:1.9.3'
 
     // Compose BOM
-    implementation platform('androidx.compose:compose-bom:2024.01.00')
+    implementation platform('androidx.compose:compose-bom:2024.06.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
@@ -88,8 +87,8 @@ dependencies {
     implementation 'io.ktor:ktor-client-core:3.0.3'
 
     // Hilt
-    implementation "com.google.dagger:hilt-android:2.50"
-    kapt "com.google.dagger:hilt-compiler:2.50"
+    implementation 'com.google.dagger:hilt-android:2.51.1'
+    kapt 'com.google.dagger:hilt-compiler:2.51.1'
     implementation "androidx.hilt:hilt-navigation-compose:1.1.0"
 
     // Camera + OCR
@@ -108,19 +107,19 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:0.32.0"
 
     // Navigation
-    implementation "androidx.navigation:navigation-compose:2.7.6"
+    implementation "androidx.navigation:navigation-compose:2.8.4"
 
     // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0"
 
     // Coil (image loading)
     implementation "io.coil-kt:coil-compose:2.5.0"
 
     // Kotlinx Serialization
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
 
     // Kotlinx datetime
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.5.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.6.1"
 
     // Browser (Chrome Custom Tabs)
     implementation "androidx.browser:browser:1.7.0"
