@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class ReportsUiState(
@@ -47,8 +46,8 @@ class ReportsViewModel @Inject constructor(
 
     init {
         // Set default dates to current month
-        val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
+        val currentMoment = LocalDateTime.now()
+        val monthStr = currentMoment.monthValue.toString().padStart(2, '0')
         val firstDay = "${currentMoment.year}-$monthStr-01"
         val lastDay = "${currentMoment.year}-$monthStr-31" // Simplified
         

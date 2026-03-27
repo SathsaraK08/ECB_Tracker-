@@ -35,3 +35,12 @@ val TextSub = Color(0xFF8BA3BE)
 val TextPrimaryLight = Color(0xFF0D1117)
 val TextMutedLight = Color(0xFF6B8CAE)
 val TextSubLight = Color(0xFF3D5A7A)
+
+
+// Backward-compatible aliases used across screens
+val Cyan = CyanPrimary
+val Green = GreenSuccess
+val Amber = AmberWarning
+val Red = RedDanger
+val Purple = PurpleAccent
+val Muted = TextMuted

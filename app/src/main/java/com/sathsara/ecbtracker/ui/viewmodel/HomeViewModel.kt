@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -39,8 +38,7 @@ class HomeViewModel @Inject constructor(
         loadDashboardData()
     }
 
-    @OptIn(kotlin.time.ExperimentalTime::class)
-    fun loadDashboardData() {
+        fun loadDashboardData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             
@@ -52,10 +50,10 @@ class HomeViewModel @Inject constructor(
             val rate = settings?.lkrPerUnit ?: 32.0
             
             // Generate current month string e.g. "2023-10"
-            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
+            val currentMoment = LocalDateTime.now()
+            val monthStr = currentMoment.monthValue.toString().padStart(2, '0')
             val yearMonth = "${currentMoment.year}-$monthStr"
-            val todayStr = currentMoment.date.toString()
+            val todayStr = currentMoment.toLocalDate().toString()
 
             // Fetch entries
             val monthEntries = entryRepository.getEntriesForMonth(yearMonth).getOrNull() ?: emptyList()
