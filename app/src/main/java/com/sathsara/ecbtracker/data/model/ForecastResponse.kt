@@ -1,12 +1,16 @@
 package com.sathsara.ecbtracker.data.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ForecastResponse(
-    val projected_bill: Double = 0.0,
-    val efficiency_rating: String = "Medium",
-    val peak_hours: String = "",
+    @SerialName("projected_bill")
+    val projectedBill: Double = 0.0,
+    @SerialName("efficiency_rating")
+    val efficiencyRating: String = "Medium",
+    @SerialName("peak_hours")
+    val peakHours: String = "",
     val tips: List<ForecastTip> = emptyList(),
 )
 
@@ -14,5 +18,6 @@ data class ForecastResponse(
 data class ForecastTip(
     val title: String = "",
     val description: String = "",
-    val saving_lkr: Double = 0.0,
+    @SerialName("saving_lkr")
+    val savingLkr: Double = 0.0,
 )

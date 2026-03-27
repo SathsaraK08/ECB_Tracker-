@@ -37,6 +37,7 @@ class PaymentRepository @Inject constructor(
             paymentsTable.upsert(payment) {
                 // Upsert handles both insert and update if the primary key exists
             }
+            Unit
         }
     }
 

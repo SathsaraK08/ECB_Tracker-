@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkMode by dataStoreManager.isDarkMode.collectAsState(initial = true)
 
-            EcbTrackerTheme(darkTheme = isDarkMode) {
+            EcbTrackerTheme(isDarkTheme = isDarkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

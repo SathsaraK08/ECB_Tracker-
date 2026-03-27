@@ -138,7 +138,7 @@ fun LoginScreen(
 
         Box(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 18.dp),
-            contentAlignment = Alignment.CenterRight
+            contentAlignment = Alignment.CenterEnd
         ) {
             Text(
                 "Forgot password?", 

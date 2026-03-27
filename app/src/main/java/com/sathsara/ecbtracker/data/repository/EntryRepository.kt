@@ -2,6 +2,7 @@ package com.sathsara.ecbtracker.data.repository
 
 import com.sathsara.ecbtracker.data.model.Entry
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.storage.storage
@@ -23,16 +24,17 @@ class EntryRepository @Inject constructor(
         isVerified: Boolean? = null
     ): Result<List<Entry>> = withContext(Dispatchers.IO) {
         Result.runCatching {
-            entriesTable.select {
-                if (isVerified == true) {
-                    filter { Entry::imgUrl.name.isNotNull() }
-                } else if (isVerified == false) {
-                    filter { Entry::imgUrl.name.isNull() }
-                }
+            val all = entriesTable.select {
                 order("date", Order.DESCENDING)
                 order("time", Order.DESCENDING)
                 limit(limit)
             }.decodeList<Entry>()
+
+            when (isVerified) {
+                true -> all.filter { !it.imgUrl.isNullOrBlank() }
+                false -> all.filter { it.imgUrl.isNullOrBlank() }
+                null -> all
+            }
         }
     }
 
@@ -89,6 +91,7 @@ class EntryRepository @Inject constructor(
             
             val finalEntry = entry.copy(imgUrl = imgUrl)
             entriesTable.insert(finalEntry)
+            Unit
         }
     }
 
@@ -97,6 +100,7 @@ class EntryRepository @Inject constructor(
             entriesTable.delete {
                 filter { eq("id", id) }
             }
+            Unit
         }
     }
     

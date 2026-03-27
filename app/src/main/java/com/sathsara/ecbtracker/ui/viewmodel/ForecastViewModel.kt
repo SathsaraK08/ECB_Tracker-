@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class ForecastUiState(
@@ -33,13 +32,12 @@ class ForecastViewModel @Inject constructor(
         loadForecast()
     }
 
-    @OptIn(kotlin.time.ExperimentalTime::class)
-    fun loadForecast() {
+        fun loadForecast() {
         viewModelScope.launch {
             _uiState.value = ForecastUiState(isLoading = true)
             
-            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
+            val currentMoment = LocalDateTime.now()
+            val monthStr = currentMoment.monthValue.toString().padStart(2, '0')
             val yearMonthStr = "${currentMoment.year}-$monthStr"
 
             val result = forecastRepository.getMonthlyForecast(yearMonthStr)

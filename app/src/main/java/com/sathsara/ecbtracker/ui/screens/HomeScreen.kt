@@ -118,7 +118,7 @@ fun HomeScreen(
 
                     VerticalSpacer(8)
 
-                    Row(crossAxisAlignment = Alignment.Bottom) {
+                    Row(verticalAlignment = Alignment.Bottom) {
                         if (uiState.isLoading) {
                             LoadingSkeleton(modifier = Modifier.height(36.dp).width(120.dp))
                         } else {
@@ -308,6 +308,7 @@ fun SimpleBarChart(data: List<Pair<String, Float>>) {
     // simplified drawing mimicking the HTML chart
     val maxVal = data.maxOfOrNull { it.second }?.coerceAtLeast(1f) ?: 1f
     
+    val outlineColor = MaterialTheme.colorScheme.outline
     Canvas(modifier = Modifier.fillMaxSize()) {
         val width = size.width
         val height = size.height
@@ -319,7 +320,7 @@ fun SimpleBarChart(data: List<Pair<String, Float>>) {
             val x = spacing + (i * (barWidth + spacing))
             val y = height - barHeight - 20.dp.toPx()
             
-            val color = if (i == data.size - 1) Cyan else MaterialTheme.colorScheme.outline
+            val color = if (i == data.size - 1) Cyan else outlineColor
             
             drawRoundRect(
                 color = color,

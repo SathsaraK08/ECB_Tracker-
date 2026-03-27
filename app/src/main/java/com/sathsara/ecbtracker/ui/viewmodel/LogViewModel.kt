@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.io.File
 import javax.inject.Inject
 
@@ -38,11 +37,10 @@ class LogViewModel @Inject constructor(
         loadPreviousReading()
     }
 
-    @OptIn(kotlin.time.ExperimentalTime::class)
-    private fun loadPreviousReading() {
+        private fun loadPreviousReading() {
         viewModelScope.launch {
-            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val dateStr = currentMoment.date.toString()
+            val currentMoment = LocalDateTime.now()
+            val dateStr = currentMoment.toLocalDate().toString()
             
             val prevEntry = entryRepository.getLatestEntryBefore(dateStr).getOrNull()
             if (prevEntry != null) {
@@ -99,11 +97,11 @@ class LogViewModel @Inject constructor(
             }
 
             val usedAmount = parsedDouble - state.previousUnit
-            val currentMoment = kotlinx.datetime.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentMoment = LocalDateTime.now()
             val timeStr = "${currentMoment.hour.toString().padStart(2, '0')}:${currentMoment.minute.toString().padStart(2, '0')}"
 
             val entry = Entry(
-                date = currentMoment.date.toString(),
+                date = currentMoment.toLocalDate().toString(),
                 time = timeStr,
                 unit = parsedDouble,
                 used = usedAmount,

@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class PaymentsUiState(
@@ -44,13 +43,13 @@ class PaymentsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             
-            val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val monthStr = currentMoment.monthNumber.toString().padStart(2, '0')
+            val currentMoment = LocalDateTime.now()
+            val monthStr = currentMoment.monthValue.toString().padStart(2, '0')
             val yearMonthStr = "${currentMoment.year}-$monthStr"
             
             // Format friendly month label
             val months = listOf("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
-            val friendlyMonth = "${months[currentMoment.monthNumber - 1]} ${currentMoment.year}"
+            val friendlyMonth = "${months[currentMoment.monthValue - 1]} ${currentMoment.year}"
             
             val settings = settingsRepository.getSettings().getOrNull()
             val rate = settings?.lkrPerUnit ?: 32.0
