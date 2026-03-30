@@ -56,8 +56,8 @@ class EntryRepository @Inject constructor(
     }
 
     override suspend fun getEntries(
-        limit: Long = 20,
-        isVerified: Boolean? = null
+        limit: Long,
+        isVerified: Boolean?
     ): Result<List<Entry>> = withContext(Dispatchers.IO) {
         Result.runCatching {
             val userId = requireUserId()
@@ -76,7 +76,7 @@ class EntryRepository @Inject constructor(
         }
     }
 
-    override suspend fun getRecentEntries(limit: Long = 3): Result<List<Entry>> = withContext(Dispatchers.IO) {
+    override suspend fun getRecentEntries(limit: Long): Result<List<Entry>> = withContext(Dispatchers.IO) {
         Result.runCatching {
             val userId = requireUserId()
             entriesTable.select {
@@ -121,7 +121,7 @@ class EntryRepository @Inject constructor(
         }
     }
 
-    override suspend fun insertEntry(entry: Entry, photoFile: File? = null): Result<Unit> = withContext(Dispatchers.IO) {
+    override suspend fun insertEntry(entry: Entry, photoFile: File?): Result<Unit> = withContext(Dispatchers.IO) {
         Result.runCatching {
             val userId = requireUserId()
             val orderedEntries = getOrderedEntries(userId)
