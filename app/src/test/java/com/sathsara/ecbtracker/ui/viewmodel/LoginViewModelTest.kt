@@ -21,7 +21,7 @@ class LoginViewModelTest {
     @Test
     fun signIn_sets_authenticated_state_on_successful_session() = runTest {
         val authRepository = FakeAuthRepository(
-            signInResult = Result.success(Unit),
+            shouldSignInSucceed = true,
             hasActiveSession = true
         )
         val viewModel = LoginViewModel(authRepository)
@@ -36,7 +36,7 @@ class LoginViewModelTest {
     @Test
     fun signUp_shows_confirmation_message_when_session_is_not_created() = runTest {
         val authRepository = FakeAuthRepository(
-            signUpResult = Result.success(Unit),
+            shouldSignUpSucceed = true,
             hasActiveSession = false
         )
         val viewModel = LoginViewModel(authRepository)
@@ -64,7 +64,7 @@ class LoginViewModelTest {
     @Test
     fun sendPasswordReset_sets_info_message_on_success() = runTest {
         val authRepository = FakeAuthRepository(
-            passwordResetResult = Result.success(Unit)
+            shouldResetPasswordSucceed = true
         )
         val viewModel = LoginViewModel(authRepository)
 
@@ -77,22 +77,25 @@ class LoginViewModelTest {
 
 private class FakeAuthRepository(
     private val isConfigured: Boolean = true,
-    private val signInResult: Result<Unit> = Result.failure(IllegalStateException("Unexpected sign-in")),
-    private val signUpResult: Result<Unit> = Result.failure(IllegalStateException("Unexpected sign-up")),
-    private val passwordResetResult: Result<Unit> = Result.success(Unit),
+    private val shouldSignInSucceed: Boolean = false,
+    private val shouldSignUpSucceed: Boolean = false,
+    private val shouldResetPasswordSucceed: Boolean = true,
     private val hasActiveSession: Boolean = false
 ) : AuthRepositoryContract {
     override val isUserLoggedIn: Flow<Boolean> = MutableStateFlow(hasActiveSession)
 
     override fun isConfigured(): Boolean = isConfigured
 
-    override suspend fun signIn(email: String, password: String): Result<Unit> = signInResult
+    override suspend fun signIn(email: String, password: String): Result<Unit> = 
+        if (shouldSignInSucceed) Result.success(Unit) else Result.failure(IllegalStateException("Unexpected sign-in"))
 
-    override suspend fun signUp(email: String, password: String): Result<Unit> = signUpResult
+    override suspend fun signUp(email: String, password: String): Result<Unit> = 
+        if (shouldSignUpSucceed) Result.success(Unit) else Result.failure(IllegalStateException("Unexpected sign-up"))
 
     override suspend fun signOut(): Result<Unit> = Result.success(Unit)
 
-    override suspend fun sendPasswordReset(email: String): Result<Unit> = passwordResetResult
+    override suspend fun sendPasswordReset(email: String): Result<Unit> = 
+        if (shouldResetPasswordSucceed) Result.success(Unit) else Result.failure(IllegalStateException("Unexpected reset"))
 
     override suspend fun updatePassword(newPassword: String): Result<Unit> = Result.success(Unit)
 
