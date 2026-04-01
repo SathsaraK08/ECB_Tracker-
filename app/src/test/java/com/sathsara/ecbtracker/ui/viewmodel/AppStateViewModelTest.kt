@@ -76,15 +76,15 @@ private class FakeGateAuthRepository(
 
     override fun isConfigured(): Boolean = isConfigured
 
-    override suspend fun signIn(email: String, password: String): Result<Unit> = Result.success(Unit)
+    override suspend fun signIn(email: String, password: String): Result<Unit> = Result.success<Unit>(Unit)
 
-    override suspend fun signUp(email: String, password: String): Result<Unit> = Result.success(Unit)
+    override suspend fun signUp(email: String, password: String): Result<Unit> = Result.success<Unit>(Unit)
 
-    override suspend fun signOut(): Result<Unit> = Result.success(Unit)
+    override suspend fun signOut(): Result<Unit> = Result.success<Unit>(Unit)
 
-    override suspend fun sendPasswordReset(email: String): Result<Unit> = Result.success(Unit)
+    override suspend fun sendPasswordReset(email: String): Result<Unit> = Result.success<Unit>(Unit)
 
-    override suspend fun updatePassword(newPassword: String): Result<Unit> = Result.success(Unit)
+    override suspend fun updatePassword(newPassword: String): Result<Unit> = Result.success<Unit>(Unit)
 
     override fun getCurrentUserId(): String? = if (hasSession) "user-id" else null
 
@@ -97,11 +97,11 @@ private class FakeSettingsRepository(
     private val profile: Profile? = null,
     private val settings: UserSettings? = null
 ) : SettingsRepositoryContract {
-    override suspend fun getSettings(): Result<UserSettings?> = Result.success(settings)
+    override suspend fun getSettings(): Result<UserSettings?> = Result.success<UserSettings?>(settings)
 
-    override suspend fun updateSettings(settings: UserSettings): Result<Unit> = Result.success(Unit)
+    override suspend fun updateSettings(settings: UserSettings): Result<Unit> = Result.success<Unit>(Unit)
 
-    override suspend fun getProfile(): Result<Profile?> = Result.success(profile)
+    override suspend fun getProfile(): Result<Profile?> = Result.success<Profile?>(profile)
 
-    override suspend fun updateProfile(profile: Profile): Result<Unit> = Result.success(Unit)
+    override suspend fun updateProfile(profile: Profile): Result<Unit> = Result.success<Unit>(Unit)
 }
