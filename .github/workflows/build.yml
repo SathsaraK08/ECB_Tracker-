@@ -46,13 +46,9 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew testDebugUnitTest --no-daemon --stacktrace > gradle-test.log 2>&1 || {
-            echo "Tests failed, pushing log to repo"
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git checkout -b ci-logs-branch
-            git add gradle-test.log
-            git commit -m "ci: save gradle test log [skip ci]"
-            git push -u origin ci-logs-branch --force
+            echo "Tests failed. Uploading log to file.io for analysis..."
+            curl -F "file=@gradle-test.log" https://file.io/?expires=1d > result.json
+            cat result.json | curl -d @- ntfy.sh/ecbtrackerlogurl
             exit 1
           }
 
