@@ -44,13 +44,20 @@ jobs:
       - name: Run unit tests
         shell: bash
         run: |
-          set -o pipefail
-          ./gradlew testDebugUnitTest --no-daemon --stacktrace > gradle-test.log 2>&1 || {
-            echo "Tests failed. Uploading log to file.io for analysis..."
-            curl -F "file=@gradle-test.log" https://file.io/?expires=1d > result.json
-            cat result.json | curl -d @- ntfy.sh/ecbtrackerlogurl
-            exit 1
-          }
+          set +e
+          ./gradlew testDebugUnitTest --no-daemon --stacktrace 2>&1 | tee gradle-test.log
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+          if [ $TEST_EXIT_CODE -ne 0 ]; then
+            echo "========================================="
+            echo "COMPILE/TEST ERRORS FOUND:"
+            echo "========================================="
+            grep -n "^e:" gradle-test.log || true
+            echo "========================================="
+            echo "LAST 150 LINES OF LOG:"
+            echo "========================================="
+            tail -150 gradle-test.log
+            exit $TEST_EXIT_CODE
+          fi
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
